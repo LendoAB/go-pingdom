@@ -1,16 +1,16 @@
-# go-pingdom #
+# go-pingdom
 
-[![Build Status](https://travis-ci.org/nordcloud/go-pingdom.svg?branch=master)](https://travis-ci.org/nordcloud/go-pingdom) [![Go Report Card](https://goreportcard.com/badge/github.com/nordcloud/go-pingdom/pingdom)](https://goreportcard.com/report/github.com/nordcloud/go-pingdom/pingdom) [![GoDoc](https://godoc.org/github.com/nordcloud/go-pingdom/pingdom?status.svg)](https://godoc.org/github.com/nordcloud/go-pingdom/pingdom)
+[![Build Status](https://travis-ci.org/lendoab/go-pingdom.svg?branch=master)](https://travis-ci.org/lendoab/go-pingdom) [![Go Report Card](https://goreportcard.com/badge/github.com/lendoab/go-pingdom/pingdom)](https://goreportcard.com/report/github.com/lendoab/go-pingdom/pingdom) [![GoDoc](https://godoc.org/github.com/lendoab/go-pingdom/pingdom?status.svg)](https://godoc.org/github.com/lendoab/go-pingdom/pingdom)
 
 go-pingdom is a Go client library for the Pingdom API.
 
 This currently supports working with HTTP, ping checks, and TCP checks.
 
-**Important**: The current version of this library only supports the Pingdom 3.1 API.  If you are still using the deprecated Pingdom 2.1 API please pin your dependencies to tag v1.1.0 of this library.
+**Important**: The current version of this library only supports the Pingdom 3.1 API. If you are still using the deprecated Pingdom 2.1 API please pin your dependencies to tag v1.1.0 of this library.
 
-## Usage ##
+## Usage
 
-### Pingdom Client ###
+### Pingdom Client
 
 Construct a new Pingdom client:
 
@@ -23,6 +23,7 @@ client, err := pingdom.NewClientWithConfig(pingdom.ClientConfig{
 Using a Pingdom client, you can access supported services.
 
 You can override the timeout or other parameters by passing a custom http client:
+
 ```go
 client, err := pingdom.NewClientWithConfig(pingdom.ClientConfig{
     APIToken: "pingdom_api_token",
@@ -39,8 +40,7 @@ export PINGDOM_API_TOKEN=pingdom_api_token
 ./your_application
 ```
 
-
-### Pindom Extension Client ###
+### Pindom Extension Client
 
 Construct a new Pingdom extension client:
 
@@ -59,7 +59,7 @@ client_ext, err := pingdomext.NewClientWithConfig(pingdomext.ClientConfig{
 
 Using a Pingdom extention client, you can access supported services, like integration service.
 
-You must override the CheckRedirect since there have multiple redirect while get the jwt token for access api. 
+You must override the CheckRedirect since there have multiple redirect while get the jwt token for access api.
 
 The `Username`,`Password` and `OrgID`can also implicitly be provided by setting the environment variable `SOLARWINDS_USER` , `SOLARWINDS_PASSWD` and `SOLARWINDS_ORG_ID`:
 
@@ -72,7 +72,7 @@ export SOLARWINDS_ORG_ID=test_org
 
 The `Username` and `Password` is required, the `OrgID` is optional. If the `OrgID` is not provide, your default organization will be used.
 
-### Solarwinds Client ###
+### Solarwinds Client
 
 Construct a new Solarwinds client:
 
@@ -85,11 +85,11 @@ solarwindsClient, err := solarwinds.NewClient(solarwinds.ClientConfig{
 
 Using a Solarwinds client, you can access supported services.
 
-### CheckService ###
+### CheckService
 
 This service manages pingdom Checks which are represented by the `Check` struct.
 When creating or updating Checks you must specify at a minimum the `Name`, `Hostname`
-and `Resolution`.  Other fields are optional but if not set will be given the zero
+and `Resolution`. Other fields are optional but if not set will be given the zero
 values for the underlying type.
 
 More information on Checks from Pingdom: https://www.pingdom.com/features/api/documentation/#ResourceChecks
@@ -110,6 +110,7 @@ fmt.Println("Created check:", check) // {ID, Name}
 ```
 
 Create a new Ping check:
+
 ```go
 newCheck := pingdom.PingCheck{Name: "Test Check", Hostname: "example.com", Resolution: 5}
 check, err := client.Checks.Create(&newCheck)
@@ -117,6 +118,7 @@ fmt.Println("Created check:", check) // {ID, Name}
 ```
 
 Create a new TCP check:
+
 ```go
 newCheck := pingdom.TCPCheck{Name: "Test Check", Hostname: "example.com", Port: 25, StringToSend: "HELO foo.com", StringToExpect: "250 mail.test.com", Resolution: 5}
 check, err := client.Checks.Create(&newCheck)
@@ -124,6 +126,7 @@ fmt.Println("Created check:", check) // {ID, Name}
 ```
 
 Create a new DNS check:
+
 ```go
 newCheck := pingdom.DNSCheck{
     Name: "fake check",
@@ -164,11 +167,11 @@ newCheck := pingdom.HttpCheck{Name: "Test Check", Hostname: "example.com", Resol
 checkResponse, err := client.Checks.Create(&newCheck)
 ```
 
-### MaintenanceService ###
+### MaintenanceService
 
 This service manages pingdom Maintenances which are represented by the `Maintenance` struct.
 When creating or updating Maintenances you must specify at a minimum the `Description`, `From`
-and `To`.  Other fields are optional but if not set will be given the zero
+and `To`. Other fields are optional but if not set will be given the zero
 values for the underlying type.
 
 More information on Maintenances from Pingdom: https://www.pingdom.com/resources/api/2.1#ResourceMaintenance
@@ -231,7 +234,7 @@ m := pingdom.MaintenanceWindow{
 maintenanceUpdate, err := client.Maintenances.Update(12345, &m)
 ```
 
-### OccurrenceService ###
+### OccurrenceService
 
 This service manages pingdom Maintenance Occurrences which are represented by the `Occurrence` struct.
 It is not possible to create occurrences directly, instead they are created automatically as specified by
@@ -266,7 +269,7 @@ msg, err := client.Occurrences.Update(12345, update)
 
 Delete an Occurrence:
 
-Note: that only future maintenance occurrence can be deleted. 
+Note: that only future maintenance occurrence can be deleted.
 
 ```go
 msg, err := client.Maintenances.Delete(12345)
@@ -278,7 +281,7 @@ Delete multiple Occurrences in one go:
 msg, err := client.Maintenances.Delete([]int64{1, 2, 3, 4, 5})
 ```
 
-### ProbeService ###
+### ProbeService
 
 This service gets pingdom Probes which are represented by the `Probes` struct.
 
@@ -300,7 +303,7 @@ for _, probe := range probes {
 }
 ```
 
-### TeamService ###
+### TeamService
 
 This service manages pingdom Teams which are represented by the `Team` struct.
 When creating or updating Teams you must specify the `Name` and `MemberIDs`,
@@ -347,7 +350,7 @@ Delete a team:
 team, err := client.Teams.Delete(12345)
 ```
 
-### ContactService ###
+### ContactService
 
 This service manages users and their contact information which is represented by the `Contact` struct.
 More information from Pingdom: https://docs.pingdom.com/api/#tag/Contacts
@@ -410,17 +413,16 @@ result, err := client.Contacts.Delete(contactId)
 fmt.Println(result.Message)
 ```
 
-### TMS Checks Service ###
+### TMS Checks Service
 
 This service manages pingdom TMS Checks which are represented by the `TMS Check` struct.
 More information from Pingdom: https://docs.pingdom.com/api/#tag/TMS-Checks
-
 
 Get a list of all TMS Checks:
 
 ```go
 tmsChecks, err := client.TMSCheck.List()
-fmt.Println("TMS Checks:", tmsChecks) 
+fmt.Println("TMS Checks:", tmsChecks)
 ```
 
 Create a new TMS Check:
@@ -448,7 +450,6 @@ Get details for a specific TMS Check:
 tmsCheckDetail, err := client.TMSCheck.Read(12345)
 ```
 
-
 Update a TMS Check:
 
 ```go
@@ -472,21 +473,16 @@ Delete a TMS Check:
 delMsg, err := client.TMSCheck.Delete(12345)
 ```
 
-
-
-
-
-### IntegrationService ###
+### IntegrationService
 
 This service manages pingdom Integrations which are represented by the `Integration` struct. Now only support manages the WebHook Integrations.
-When creating or updating Integrations you must specify the `Active`, `ProviderID` and `WebHookData`.  
-
+When creating or updating Integrations you must specify the `Active`, `ProviderID` and `WebHookData`.
 
 Get a list of all integrations:
 
 ```go
 integrations, err := client_ext.Integrations.List()
-fmt.Println("Integrations:", integrations) 
+fmt.Println("Integrations:", integrations)
 ```
 
 Create a new WebHook Integration:
@@ -501,7 +497,7 @@ newIntegration := pingdomext.WebHookIntegration{
 	},
 }
 integrationStatus, err := client_ext.Integrations.Create(&newIntegration)
-fmt.Println("Created integration:", integrationStatus) 
+fmt.Println("Created integration:", integrationStatus)
 ```
 
 Get details for a specific integration:
@@ -509,7 +505,6 @@ Get details for a specific integration:
 ```go
 integrationDetail, err := client_ext.Integrations.Read(12345)
 ```
-
 
 Update a integration:
 
@@ -537,12 +532,10 @@ List all integration providers:
 listProviders, err := client_ext.Integrations.ListProviders()
 ```
 
+### UserService
 
-
-### UserService ###
-
-This service manages Solarwinds users. A Solarwinds user can be granted access to a range of services, each with its 
-own web portal. Pingdom is one of those services. The Solarwinds API is a GraphQL API which is at a different domain 
+This service manages Solarwinds users. A Solarwinds user can be granted access to a range of services, each with its
+own web portal. Pingdom is one of those services. The Solarwinds API is a GraphQL API which is at a different domain
 as Pingdom API.
 
 Create a new user invitation. The user will only appear on the active user list and be able to use Pingdom service after
@@ -556,7 +549,7 @@ user := User{
         {
         	Name: "PINGDOM",
         	Role: "MEMBER",
-        }	
+        }
     }
 }
 err := client.UserService.Create(user)
@@ -564,6 +557,7 @@ err := client.UserService.Create(user)
 
 Update an user. User information will be updated if the user has already accepted the invitation. If the invitation has
 not yet been accepted, the invitation will be revoked and a new one with the updated information will be sent.
+
 ```go
 update := User{
     Email: "sombody@nordcloud.com",
@@ -594,26 +588,29 @@ email = "sombody@nordcloud.com"
 err := client.UserService.Retrieve(email)
 ```
 
-## Development ##
+## Development
 
-### Acceptance Tests ###
+### Acceptance Tests
 
 You can run acceptance tests against the actual pingdom API to test any changes:
+
 ```
 PINGDOM_API_TOKEN=[api token] make acceptance
 ```
 
 In order to run acceptance tests against the pingdom extension API, the following environment variables must be set:
+
 ```
 SOLARWINDS_USER=[username] SOLARWINDS_PASSWD=[password] make acceptance
 ```
 
-Note that this will create actual resources in your Pingdom account.  The tests will make a best effort to clean up but these would
+Note that this will create actual resources in your Pingdom account. The tests will make a best effort to clean up but these would
 
 In order to run acceptance tests against the actual Solarwinds API, the following environment variables must be set:
+
 ```
 SOLARWINDS_USER=[solarwinds username] SOLARWINDS_PASSWD=[solarwinds password] make acceptance
 ```
 
-Note that this will create actual resources in your Pingdom/Solarwinds account.  The tests will make a best effort to clean up but these would
+Note that this will create actual resources in your Pingdom/Solarwinds account. The tests will make a best effort to clean up but these would
 not be guaranteed on test failures depending on the nature of the failure.
